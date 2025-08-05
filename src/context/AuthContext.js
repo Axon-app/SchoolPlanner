@@ -11,7 +11,7 @@ const AuthContext = createContext({
 // Proveedor del contexto de autenticación
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState('user123'); // ID de usuario ficticio
+  const [userId] = useState('user123'); // ID de usuario ficticio
 
   // Función para iniciar sesión
   const login = () => {
