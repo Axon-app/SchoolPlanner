@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/SchoolPlanner/static/css/main.1e6e5e1c.css",
+    "main.js": "/SchoolPlanner/static/js/main.d1bf421f.js",
+    "index.html": "/SchoolPlanner/index.html",
+    "main.1e6e5e1c.css.map": "/SchoolPlanner/static/css/main.1e6e5e1c.css.map",
+    "main.d1bf421f.js.map": "/SchoolPlanner/static/js/main.d1bf421f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1e6e5e1c.css",
+    "static/js/main.d1bf421f.js"
+  ]
+}
