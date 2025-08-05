@@ -27,42 +27,44 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-10 w-full max-w-sm text-center transition-all duration-300">
-        <h1 className="text-3xl font-bold text-slate-800 mb-6 flex items-center justify-center space-x-2">
-          <Lock className="h-8 w-8 text-teal-600" />
-          <span>Iniciar Sesión</span>
-        </h1>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center mb-4">
+            <Lock className="h-8 w-8 text-teal-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800">Iniciar Sesión</h1>
+        </div>
         
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
             <input
               type="text"
               placeholder="Usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 rounded-lg border-2 border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               required
             />
           </div>
-          <div className="mb-4">
+          <div>
             <input
               type="password"
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-lg border-2 border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               required
             />
           </div>
           {loginError && (
-            <div className="text-red-500 text-sm mb-4">
+            <div className="text-red-500 text-sm text-center">
               Credenciales incorrectas. Por favor, inténtalo de nuevo.
             </div>
           )}
           <button
             type="submit"
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300"
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
             Entrar
           </button>

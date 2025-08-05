@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Bell, Info } from 'lucide-react';
 import { useAlarm } from '../../context/AlarmContext';
+import TimePicker from '../ui/TimePicker';
 
 // Componente modal para configurar las alarmas
 const AlarmModal = ({ onClose }) => {
@@ -25,86 +26,98 @@ const AlarmModal = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-slate-800 flex items-center space-x-2">
-            <Bell className="h-6 w-6 text-teal-600" />
-            <span>Configurar Alarmas</span>
-          </h3>
+      <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <div className="flex items-center space-x-2">
+            <Bell className="h-5 w-5 text-gray-600" />
+            <h3 className="text-lg font-medium text-gray-800">Configurar Alarmas</h3>
+          </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full"
+            className="text-gray-400 hover:text-gray-600 p-1"
           >
-            <X className="h-5 w-5 text-slate-500" />
+            <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="space-y-4">
-          <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-            <h4 className="text-lg font-bold text-slate-700 mb-3">Alarmas para Samuel</h4>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Hora de Salida:</label>
-              <input
-                type="time"
+
+        <div className="p-4 space-y-6">
+          {/* Sección Samuel */}
+          <div>
+            <h4 className="text-base font-medium text-gray-700 mb-3">Alarmas para Samuel</h4>
+            <div className="space-y-3">
+              <TimePicker
+                label="Hora de Salida"
                 value={samuelDepartureTime}
-                onChange={(e) => setSamuelDepartureTime(e.target.value)}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                onChange={setSamuelDepartureTime}
               />
-            </div>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Hora de Llegada:</label>
-              <input
-                type="time"
+              <TimePicker
+                label="Hora de Llegada"
                 value={samuelArrivalTime}
-                onChange={(e) => setSamuelArrivalTime(e.target.value)}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                onChange={setSamuelArrivalTime}
               />
             </div>
           </div>
-          <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-            <h4 className="text-lg font-bold text-slate-700 mb-3">Alarmas para Martín</h4>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Hora de Salida:</label>
-              <input
-                type="time"
+
+          {/* Sección Martín */}
+          <div className="mt-4">
+            <h4 className="text-base font-medium text-gray-700 mb-3">Alarmas para Martín</h4>
+            <div className="space-y-3">
+              <TimePicker
+                label="Hora de Salida"
                 value={martinDepartureTime}
-                onChange={(e) => setMartinDepartureTime(e.target.value)}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                onChange={setMartinDepartureTime}
               />
-            </div>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Hora de Llegada:</label>
-              <input
-                type="time"
+              <TimePicker
+                label="Hora de Llegada"
                 value={martinArrivalTime}
-                onChange={(e) => setMartinArrivalTime(e.target.value)}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                onChange={setMartinArrivalTime}
               />
             </div>
           </div>
-        </div>
-        {notificationPermission !== 'granted' && (
-          <div className="mt-4 p-4 rounded-xl bg-amber-100 border border-amber-200 text-amber-800">
-            <div className="flex items-start">
-              <Info className="h-5 w-5 mr-2 flex-shrink-0" />
-              <div>
-                <p className="font-semibold text-sm">Permisos de notificación denegados.</p>
-                <p className="text-sm">Para recibir las alarmas, por favor, activa las notificaciones en la configuración de tu navegador.</p>
+
+          {/* Notificación de permisos */}
+          {notificationPermission !== 'granted' && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
+              <div className="flex items-center text-sm">
+                <Info className="h-5 w-5 mr-2 text-yellow-600 flex-shrink-0" />
+                <p className="text-yellow-800">Notificaciones en la configuración de tu navegador.</p>
               </div>
+              <button
+                onClick={requestNotificationPermission}
+                className="mt-2 w-full bg-yellow-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors"
+              >
+                Activar Notificaciones
+              </button>
             </div>
-            <button
-              onClick={requestNotificationPermission}
-              className="mt-3 w-full bg-amber-500 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300"
-            >
-              Activar Notificaciones
-            </button>
-          </div>
-        )}
-        <div className="mt-6">
+          )}
+        </div>
+
+        {/* Botones inferiores */}
+        <div className="p-4">
           <button
             onClick={handleSaveAlarms}
-            className="w-full bg-teal-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300"
+            className="w-full bg-blue-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mb-3"
           >
-            Guardar Alarmas
+            Establecer
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full py-3 px-4 rounded-lg border border-gray-300 text-gray-700 mb-3"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => {
+              // Función para borrar todas las alarmas
+              setSamuelDepartureTime('');
+              setSamuelArrivalTime('');
+              setMartinDepartureTime('');
+              setMartinArrivalTime('');
+            }}
+            className="w-full py-3 px-4 text-gray-600 font-medium"
+          >
+            Borrar
           </button>
         </div>
       </div>

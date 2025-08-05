@@ -62,8 +62,7 @@ export const AlarmProvider = ({ children }) => {
 
     // Limpiar intervalos anteriores
     alarmIntervals.forEach(clearInterval);
-    setAlarmIntervals([]);
-
+    
     const intervals = [];
 
     if (samuelDepartureTime) {
@@ -113,7 +112,7 @@ export const AlarmProvider = ({ children }) => {
     setAlarmIntervals(intervals);
 
     return () => intervals.forEach(clearInterval);
-  }, [samuelDepartureTime, samuelArrivalTime, martinDepartureTime, martinArrivalTime, notificationPermission, isLoggedIn, alarmIntervals]);
+  }, [samuelDepartureTime, samuelArrivalTime, martinDepartureTime, martinArrivalTime, notificationPermission, isLoggedIn]);
 
   // Función para guardar las alarmas (ahora solo actualiza el estado local)
   const saveAlarms = async () => {

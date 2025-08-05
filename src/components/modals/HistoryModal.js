@@ -14,44 +14,47 @@ const HistoryModal = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-slate-800 flex items-center space-x-2">
-            <List className="h-6 w-6 text-indigo-600" />
+      <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+            <List className="h-6 w-6 text-blue-600" />
             <span>Historial Mensual</span>
           </h3>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full"
+            className="text-gray-400 hover:text-gray-600"
           >
-            <X className="h-5 w-5 text-slate-500" />
+            <X className="h-6 w-6" />
           </button>
         </div>
-        <ul className="space-y-3 mb-4">
+        
+        <div className="space-y-3 mb-6">
           {monthlyTotalsData.length > 0 ? (
             monthlyTotalsData.map((item) => {
               const [year, month] = item.id.split('-');
               const monthName = MESES[parseInt(month, 10) - 1];
               return (
-                <li key={item.id} className="flex justify-between items-center bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-200">
-                  <span className="font-medium text-slate-700">{monthName} {year}</span>
-                  <span className="text-lg font-bold text-indigo-600">${item.total.toLocaleString()}</span>
-                </li>
+                <div key={item.id} className="flex justify-between items-center bg-blue-50 p-4 rounded-lg">
+                  <span className="text-gray-700 font-medium">{monthName} {year}</span>
+                  <span className="text-lg font-bold text-blue-600">${item.total.toLocaleString()}</span>
+                </div>
               );
             })
           ) : (
-            <li className="text-slate-500 text-center py-4">No hay totales guardados aún.</li>
+            <div className="text-gray-500 text-center py-8">No hay totales guardados aún.</div>
           )}
-        </ul>
+        </div>
+        
         <button
           onClick={handleShareReport}
-          className="w-full flex items-center justify-center space-x-2 bg-teal-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300"
+          className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Share2 className="h-5 w-5" />
           <span>Compartir Informe</span>
         </button>
+        
         {clipboardMessage && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-green-500 text-white text-sm py-2 px-4 rounded-full shadow-lg transition-opacity duration-300 animate-fade-in">
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-sm py-2 px-4 rounded-lg shadow-lg">
             {clipboardMessage}
           </div>
         )}

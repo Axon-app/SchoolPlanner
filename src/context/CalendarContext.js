@@ -60,20 +60,24 @@ export const CalendarProvider = ({ children }) => {
   // Calcula el total mensual cuando los datos cambian
   useEffect(() => {
     if (!isLoggedIn) return;
-    const total = Object.values(dayData).reduce((sum, data) => {
-      if (data) {
-        let dayTotal = 0;
-        
-        if (data.llevada1) dayTotal += VALORES_FIJOS.samuel.llevada;
-        if (data.traida1) dayTotal += VALORES_FIJOS.samuel.traida;
-        if (data.llevada2) dayTotal += VALORES_FIJOS.martin.llevada;
-        if (data.traida2) dayTotal += VALORES_FIJOS.martin.traida;
-        
-        if (data.valorPrincipal) {
-          dayTotal += parseFloat(data.valorPrincipal);
+    const total = Object.entries(dayData).reduce((sum, [key, data]) => {
+      // Verificar si la clave pertenece al mes y año actuales
+      const [year, month] = key.split('-');
+      if (parseInt(year) === currentYear && parseInt(month) === currentMonth + 1) {
+        if (data) {
+          let dayTotal = 0;
+          
+          if (data.llevada1) dayTotal += VALORES_FIJOS.samuel.llevada;
+          if (data.traida1) dayTotal += VALORES_FIJOS.samuel.traida;
+          if (data.llevada2) dayTotal += VALORES_FIJOS.martin.llevada;
+          if (data.traida2) dayTotal += VALORES_FIJOS.martin.traida;
+          
+          if (data.valorPrincipal) {
+            dayTotal += parseFloat(data.valorPrincipal);
+          }
+          
+          return sum + dayTotal;
         }
-        
-        return sum + dayTotal;
       }
       return sum;
     }, 0);
@@ -95,31 +99,41 @@ export const CalendarProvider = ({ children }) => {
 
   // Función para actualizar los datos de un día
   const updateDayData = (field, value) => {
-    const key = `${currentYear}-${currentMonth}-${selectedDay}`;
+    const key = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+    console.log('Context - updateDayData:', { field, value, key, selectedDay });
+    
     if (field === 'valorPrincipal') {
       if (value === '' || !isNaN(value)) {
-        setDayData(prev => ({
+        setDayData(prev => {
+          const newData = {
+            ...prev,
+            [key]: {
+              ...prev[key],
+              [field]: value
+            }
+          };
+          console.log('Context - New dayData:', newData);
+          return newData;
+        });
+      }
+    } else {
+      setDayData(prev => {
+        const newData = {
           ...prev,
           [key]: {
             ...prev[key],
             [field]: value
           }
-        }));
-      }
-    } else {
-      setDayData(prev => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          [field]: value
-        }
-      }));
+        };
+        console.log('Context - New dayData:', newData);
+        return newData;
+      });
     }
   };
 
   // Función para resetear los datos de un día
   const resetDayData = () => {
-    const key = `${currentYear}-${currentMonth}-${selectedDay}`;
+    const key = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
     setDayData(prev => {
       const newData = { ...prev };
       delete newData[key];
@@ -132,7 +146,11 @@ export const CalendarProvider = ({ children }) => {
     const newDate = new Date(currentDate);
     newDate.setMonth(currentMonth + direction);
     setCurrentDate(newDate);
-    setDayData({}); // Limpiar los datos del mes anterior
+  };
+
+  // Función para obtener el total del mes actual
+  const getCurrentMonthTotal = () => {
+    return totalMensual;
   };
 
   // Contexto que se proporcionará
@@ -148,6 +166,7 @@ export const CalendarProvider = ({ children }) => {
     updateDayData,
     resetDayData,
     changeMonth,
+    getCurrentMonthTotal,
     MESES: MESES
   };
 
