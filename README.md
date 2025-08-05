@@ -2,6 +2,8 @@
 
 Esta aplicación web permite gestionar el control de rutas escolares, registrando los traslados diarios de estudiantes y calculando los montos correspondientes.
 
+**[ACCEDER A LA APLICACIÓN](https://axon-app.github.io/SchoolPlanner/)**
+
 ## Características
 
 - Login seguro para acceder a la aplicación
