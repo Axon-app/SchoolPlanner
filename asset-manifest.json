@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/SchoolPlanner/static/css/main.e6c13ad2.css",
+    "main.css": "/SchoolPlanner/static/css/main.d2f57d35.css",
     "main.js": "/SchoolPlanner/static/js/main.271f5cb3.js",
     "index.html": "/SchoolPlanner/index.html",
-    "main.e6c13ad2.css.map": "/SchoolPlanner/static/css/main.e6c13ad2.css.map",
+    "main.d2f57d35.css.map": "/SchoolPlanner/static/css/main.d2f57d35.css.map",
     "main.271f5cb3.js.map": "/SchoolPlanner/static/js/main.271f5cb3.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
+    "static/css/main.d2f57d35.css",
     "static/js/main.271f5cb3.js"
   ]
 }
