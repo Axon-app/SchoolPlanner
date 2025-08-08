@@ -64,7 +64,11 @@ export const LoginForm = ({ onLogin, loginError }) => {
       }
       onLogin(username, password);
     } else {
-      setMessage('Credenciales incorrectas.');
+      if (username === 'admin') {
+        setMessage('La contraseña del usuario admin ha sido cambiada. Usa "¿Olvidaste tu contraseña?" para restablecerla.');
+      } else {
+        setMessage('Credenciales incorrectas.');
+      }
     }
   };
 
