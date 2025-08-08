@@ -49,9 +49,25 @@ function InstallPWAButton() {
 function App() {
   // Mostrar el splash modal antes del contenido principal
   const [showSplash, setShowSplash] = React.useState(true);
+  const [isInstalled, setIsInstalled] = React.useState(false);
+
   React.useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 1800);
     return () => clearTimeout(timer);
+  }, []);
+
+  React.useEffect(() => {
+    // Detectar si la app está instalada
+    const checkInstalled = () => {
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        setIsInstalled(true);
+      } else {
+        setIsInstalled(false);
+      }
+    };
+    checkInstalled();
+    window.addEventListener('appinstalled', () => setIsInstalled(true));
+    return () => window.removeEventListener('appinstalled', () => setIsInstalled(true));
   }, []);
 
   return (
@@ -63,10 +79,10 @@ function App() {
         </>
       )}
       {!showSplash && (
-          <>
-            <InstallPWAButton />
-            <CalendarioControlRuta />
-          </>
+        <>
+          {!isInstalled && <InstallPWAButton />}
+          <CalendarioControlRuta />
+        </>
       )}
     </div>
   );
