@@ -30,16 +30,19 @@ export const DayModal = ({
     localStorage.getItem('nameMartin') || 'Martín Santiago'
   ]);
   const [showEditNames, setShowEditNames] = useState(false);
+  const [editNameIdx, setEditNameIdx] = useState(null);
   const handleSaveNames = (newNames) => {
     setNames(newNames);
     localStorage.setItem('nameSamuel', newNames[0]);
     localStorage.setItem('nameMartin', newNames[1]);
+    setEditNameIdx(null);
   };
   const handleDeleteName = (idx) => {
     const updated = [...names];
     updated[idx] = idx === 0 ? 'Samuel Mathias' : 'Martín Santiago';
     setNames(updated);
     localStorage.setItem(idx === 0 ? 'nameSamuel' : 'nameMartin', updated[idx]);
+    setEditNameIdx(null);
   };
 
   return (
@@ -63,7 +66,7 @@ export const DayModal = ({
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-lg font-bold text-slate-700">{names[0]}</h4>
               <div className="flex items-center gap-2">
-                <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                <button onClick={() => { setShowEditNames(true); setEditNameIdx(0); }} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombre">
                   <Edit className="h-5 w-5 text-blue-600" />
                 </button>
                 <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
@@ -113,7 +116,7 @@ export const DayModal = ({
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-lg font-bold text-slate-700">{names[1]}</h4>
               <div className="flex items-center gap-2">
-                <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                <button onClick={() => { setShowEditNames(true); setEditNameIdx(1); }} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombre">
                   <Edit className="h-5 w-5 text-blue-600" />
                 </button>
                 <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
@@ -208,10 +211,24 @@ export const DayModal = ({
         </div>
         <EditNamesModal
           open={showEditNames}
-          names={names}
-          onSave={handleSaveNames}
-          onDelete={handleDeleteName}
-          onClose={() => setShowEditNames(false)}
+          names={editNameIdx !== null ? [names[editNameIdx]] : names}
+          onSave={newNames => {
+            if (editNameIdx !== null) {
+              const updated = [...names];
+              updated[editNameIdx] = newNames[0];
+              handleSaveNames(updated);
+            } else {
+              handleSaveNames(newNames);
+            }
+          }}
+          onDelete={idx => {
+            if (editNameIdx !== null) {
+              handleDeleteName(editNameIdx);
+            } else {
+              handleDeleteName(idx);
+            }
+          }}
+          onClose={() => { setShowEditNames(false); setEditNameIdx(null); }}
         />
       </div>
     </div>

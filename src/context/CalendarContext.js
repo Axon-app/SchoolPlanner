@@ -67,10 +67,10 @@ export const CalendarProvider = ({ children }) => {
         if (data) {
           let dayTotal = 0;
           
-          if (data.llevada1) dayTotal += VALORES_FIJOS.samuel.llevada;
-          if (data.traida1) dayTotal += VALORES_FIJOS.samuel.traida;
-          if (data.llevada2) dayTotal += VALORES_FIJOS.martin.llevada;
-          if (data.traida2) dayTotal += VALORES_FIJOS.martin.traida;
+          if (data.llevada1) dayTotal += (data.valorLlevada1 !== undefined ? Number(data.valorLlevada1) : VALORES_FIJOS.samuel.llevada);
+          if (data.traida1) dayTotal += (data.valorTraida1 !== undefined ? Number(data.valorTraida1) : VALORES_FIJOS.samuel.traida);
+          if (data.llevada2) dayTotal += (data.valorLlevada2 !== undefined ? Number(data.valorLlevada2) : VALORES_FIJOS.martin.llevada);
+          if (data.traida2) dayTotal += (data.valorTraida2 !== undefined ? Number(data.valorTraida2) : VALORES_FIJOS.martin.traida);
           
           if (data.valorPrincipal) {
             dayTotal += parseFloat(data.valorPrincipal);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit } from 'lucide-react';
 import { X, DollarSign, RotateCcw } from 'lucide-react';
 import { useCalendar } from '../../context/CalendarContext';
 import { VALORES_FIJOS, MESES } from '../../context/CalendarContext';
@@ -26,6 +27,29 @@ const DayModal = ({ onClose }) => {
     updateDayData(field, value);
   };
 
+  // Estados de edición para cada valor
+  const [editField, setEditField] = useState(null);
+  const [editValue, setEditValue] = useState("");
+
+  // Inicia edición
+  const startEdit = (field, value) => {
+    setEditField(field);
+    setEditValue(value.toString());
+  };
+
+  // Guarda el valor editado
+  const saveEdit = () => {
+    if (editField && editValue !== "") {
+      handleValueChange(editField, Number(editValue));
+    }
+    setEditField(null);
+  };
+
+  // Cancela edición
+  const cancelEdit = () => {
+    setEditField(null);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
@@ -46,6 +70,7 @@ const DayModal = ({ onClose }) => {
           <div className="border border-gray-200 rounded-lg p-4">
             <h4 className="text-lg font-medium text-gray-800 mb-3">Samuel Mathias</h4>
             <div className="space-y-3">
+              {/* Llevada1 */}
               <label className="flex items-center justify-between cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <input
@@ -56,9 +81,25 @@ const DayModal = ({ onClose }) => {
                   />
                   <span className="text-gray-700">Llevada</span>
                 </div>
-                <span className="text-green-600 font-semibold">${VALORES_FIJOS.samuel.llevada.toLocaleString()}</span>
+                {editField === 'valorLlevada1' ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
+                      className="w-20 p-1 border border-green-300 rounded text-green-600 font-semibold text-right"
+                    />
+                    <button onClick={saveEdit} className="bg-green-500 text-white px-2 py-1 rounded">Guardar</button>
+                    <button onClick={cancelEdit} className="bg-gray-300 text-gray-700 px-2 py-1 rounded">Cancelar</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600 font-semibold">${(currentData.valorLlevada1 !== undefined ? currentData.valorLlevada1 : VALORES_FIJOS.samuel.llevada).toLocaleString()}</span>
+                    <button onClick={() => startEdit('valorLlevada1', currentData.valorLlevada1 !== undefined ? currentData.valorLlevada1 : VALORES_FIJOS.samuel.llevada)} className="p-1 rounded bg-blue-100 hover:bg-blue-200"><Edit className="h-4 w-4 text-blue-600" /></button>
+                  </div>
+                )}
               </label>
-
+              {/* Traida1 */}
               <label className="flex items-center justify-between cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <input
@@ -69,7 +110,23 @@ const DayModal = ({ onClose }) => {
                   />
                   <span className="text-gray-700">Traída</span>
                 </div>
-                <span className="text-green-600 font-semibold">${VALORES_FIJOS.samuel.traida.toLocaleString()}</span>
+                {editField === 'valorTraida1' ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
+                      className="w-20 p-1 border border-green-300 rounded text-green-600 font-semibold text-right"
+                    />
+                    <button onClick={saveEdit} className="bg-green-500 text-white px-2 py-1 rounded">Guardar</button>
+                    <button onClick={cancelEdit} className="bg-gray-300 text-gray-700 px-2 py-1 rounded">Cancelar</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600 font-semibold">${(currentData.valorTraida1 !== undefined ? currentData.valorTraida1 : VALORES_FIJOS.samuel.traida).toLocaleString()}</span>
+                    <button onClick={() => startEdit('valorTraida1', currentData.valorTraida1 !== undefined ? currentData.valorTraida1 : VALORES_FIJOS.samuel.traida)} className="p-1 rounded bg-blue-100 hover:bg-blue-200"><Edit className="h-4 w-4 text-blue-600" /></button>
+                  </div>
+                )}
               </label>
             </div>
           </div>
@@ -78,6 +135,7 @@ const DayModal = ({ onClose }) => {
           <div className="border border-gray-200 rounded-lg p-4">
             <h4 className="text-lg font-medium text-gray-800 mb-3">Martín Santiago</h4>
             <div className="space-y-3">
+              {/* Llevada2 */}
               <label className="flex items-center justify-between cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <input
@@ -88,9 +146,25 @@ const DayModal = ({ onClose }) => {
                   />
                   <span className="text-gray-700">Llevada</span>
                 </div>
-                <span className="text-green-600 font-semibold">${VALORES_FIJOS.martin.llevada.toLocaleString()}</span>
+                {editField === 'valorLlevada2' ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
+                      className="w-20 p-1 border border-green-300 rounded text-green-600 font-semibold text-right"
+                    />
+                    <button onClick={saveEdit} className="bg-green-500 text-white px-2 py-1 rounded">Guardar</button>
+                    <button onClick={cancelEdit} className="bg-gray-300 text-gray-700 px-2 py-1 rounded">Cancelar</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600 font-semibold">${(currentData.valorLlevada2 !== undefined ? currentData.valorLlevada2 : VALORES_FIJOS.martin.llevada).toLocaleString()}</span>
+                    <button onClick={() => startEdit('valorLlevada2', currentData.valorLlevada2 !== undefined ? currentData.valorLlevada2 : VALORES_FIJOS.martin.llevada)} className="p-1 rounded bg-blue-100 hover:bg-blue-200"><Edit className="h-4 w-4 text-blue-600" /></button>
+                  </div>
+                )}
               </label>
-
+              {/* Traida2 */}
               <label className="flex items-center justify-between cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <input
@@ -101,7 +175,23 @@ const DayModal = ({ onClose }) => {
                   />
                   <span className="text-gray-700">Traída</span>
                 </div>
-                <span className="text-green-600 font-semibold">${VALORES_FIJOS.martin.traida.toLocaleString()}</span>
+                {editField === 'valorTraida2' ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
+                      className="w-20 p-1 border border-green-300 rounded text-green-600 font-semibold text-right"
+                    />
+                    <button onClick={saveEdit} className="bg-green-500 text-white px-2 py-1 rounded">Guardar</button>
+                    <button onClick={cancelEdit} className="bg-gray-300 text-gray-700 px-2 py-1 rounded">Cancelar</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600 font-semibold">${(currentData.valorTraida2 !== undefined ? currentData.valorTraida2 : VALORES_FIJOS.martin.traida).toLocaleString()}</span>
+                    <button onClick={() => startEdit('valorTraida2', currentData.valorTraida2 !== undefined ? currentData.valorTraida2 : VALORES_FIJOS.martin.traida)} className="p-1 rounded bg-blue-100 hover:bg-blue-200"><Edit className="h-4 w-4 text-blue-600" /></button>
+                  </div>
+                )}
               </label>
             </div>
           </div>
@@ -128,25 +218,25 @@ const DayModal = ({ onClose }) => {
               {currentData.llevada1 && (
                 <div className="flex justify-between">
                   <span>Samuel - Llevada:</span>
-                  <span className="text-green-600 font-semibold">+${VALORES_FIJOS.samuel.llevada.toLocaleString()}</span>
+                  <span className="text-green-600 font-semibold">+${(currentData.valorLlevada1 !== undefined ? Number(currentData.valorLlevada1) : VALORES_FIJOS.samuel.llevada).toLocaleString()}</span>
                 </div>
               )}
               {currentData.traida1 && (
                 <div className="flex justify-between">
                   <span>Samuel - Traída:</span>
-                  <span className="text-green-600 font-semibold">+${VALORES_FIJOS.samuel.traida.toLocaleString()}</span>
+                  <span className="text-green-600 font-semibold">+${(currentData.valorTraida1 !== undefined ? Number(currentData.valorTraida1) : VALORES_FIJOS.samuel.traida).toLocaleString()}</span>
                 </div>
               )}
               {currentData.llevada2 && (
                 <div className="flex justify-between">
                   <span>Martín - Llevada:</span>
-                  <span className="text-green-600 font-semibold">+${VALORES_FIJOS.martin.llevada.toLocaleString()}</span>
+                  <span className="text-green-600 font-semibold">+${(currentData.valorLlevada2 !== undefined ? Number(currentData.valorLlevada2) : VALORES_FIJOS.martin.llevada).toLocaleString()}</span>
                 </div>
               )}
               {currentData.traida2 && (
                 <div className="flex justify-between">
                   <span>Martín - Traída:</span>
-                  <span className="text-green-600 font-semibold">+${VALORES_FIJOS.martin.traida.toLocaleString()}</span>
+                  <span className="text-green-600 font-semibold">+${(currentData.valorTraida2 !== undefined ? Number(currentData.valorTraida2) : VALORES_FIJOS.martin.traida).toLocaleString()}</span>
                 </div>
               )}
               {currentData.valorPrincipal && parseFloat(currentData.valorPrincipal) !== 0 && (

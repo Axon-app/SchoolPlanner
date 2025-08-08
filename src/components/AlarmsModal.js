@@ -3,10 +3,10 @@ import { X, Bell, Info, Clock, Save, Edit } from 'lucide-react';
 import EditNamesModal from './EditNamesModal';
 
 const TimePickerWheel = ({ value, onChange, type }) => {
-  const min = type === 'hours' ? 0 : 0;
-  const max = type === 'hours' ? 23 : 59;
+  const min = type === 'hours' ? 1 : 0;
+  const max = type === 'hours' ? 12 : 59;
   let numValue = parseInt(value, 10);
-  if (isNaN(numValue)) numValue = 0;
+  if (isNaN(numValue)) numValue = type === 'hours' ? 1 : 0;
   return (
     <div className="flex flex-col items-center">
       <div className="w-24 h-14 flex items-center justify-center bg-gray-50 rounded-lg text-2xl font-semibold select-none border border-gray-200 mb-2">
@@ -33,20 +33,48 @@ const TimePickerWheel = ({ value, onChange, type }) => {
 };
 
 const TimePicker = ({ time, onChange, label }) => {
-  const [hours, minutes] = time.split(':');
+  // Convertir a formato 12h y AM/PM
+  let [hours, minutes] = time.split(':');
+  let ampm = 'AM';
+  let h = parseInt(hours, 10);
+  if (h === 0) {
+    hours = '12';
+    ampm = 'AM';
+  } else if (h === 12) {
+    hours = '12';
+    ampm = 'PM';
+  } else if (h > 12) {
+    hours = (h - 12).toString().padStart(2, '0');
+    ampm = 'PM';
+  } else {
+    hours = h.toString().padStart(2, '0');
+    ampm = 'AM';
+  }
 
   const handleHoursChange = (newHours) => {
-    onChange(`${newHours}:${minutes}`);
+    updateTime(newHours, minutes, ampm);
+  };
+  const handleMinutesChange = (newMinutes) => {
+    updateTime(hours, newMinutes, ampm);
+  };
+  const handleAmPmChange = (newAmPm) => {
+    updateTime(hours, minutes, newAmPm);
   };
 
-  const handleMinutesChange = (newMinutes) => {
-    onChange(`${hours}:${newMinutes}`);
-  };
+  function updateTime(hh, mm, ampmValue) {
+    let h = parseInt(hh, 10);
+    if (ampmValue === 'AM') {
+      if (h === 12) h = 0;
+    } else {
+      if (h !== 12) h += 12;
+    }
+    onChange(`${h.toString().padStart(2, '0')}:${mm}`);
+  }
 
   return (
     <div className="mb-6">
       <label className="block text-sm font-semibold text-gray-700 mb-2">{label}</label>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 items-center">
         <div className="flex-1">
           <div className="text-xs text-gray-500 mb-1 text-center">Horas</div>
           <TimePickerWheel value={hours} onChange={handleHoursChange} type="hours" />
@@ -55,6 +83,12 @@ const TimePicker = ({ time, onChange, label }) => {
         <div className="flex-1">
           <div className="text-xs text-gray-500 mb-1 text-center">Minutos</div>
           <TimePickerWheel value={minutes} onChange={handleMinutesChange} type="minutes" />
+        </div>
+        <div className="ml-2">
+          <select value={ampm} onChange={e => handleAmPmChange(e.target.value)} className="border rounded px-2 py-1 text-sm">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
         </div>
       </div>
     </div>
@@ -81,17 +115,20 @@ export function AlarmsModal({
     localStorage.getItem('nameMartin') || 'Martín Santiago'
   ]);
   const [showEditNames, setShowEditNames] = useState(false);
+  const [editNameIdx, setEditNameIdx] = useState(null);
 
   const handleSaveNames = (newNames) => {
     setNames(newNames);
     localStorage.setItem('nameSamuel', newNames[0]);
     localStorage.setItem('nameMartin', newNames[1]);
+    setEditNameIdx(null);
   };
   const handleDeleteName = (idx) => {
     const updated = [...names];
     updated[idx] = idx === 0 ? 'Samuel Mathias' : 'Martín Santiago';
     setNames(updated);
     localStorage.setItem(idx === 0 ? 'nameSamuel' : 'nameMartin', updated[idx]);
+    setEditNameIdx(null);
   };
   // Referencia para el audio
   const audioRef = React.useRef(null);
@@ -224,7 +261,7 @@ export function AlarmsModal({
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-green-800">{names[0]}</h3>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                  <button onClick={() => { setShowEditNames(true); setEditNameIdx(0); }} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombre">
                     <Edit className="h-5 w-5 text-blue-600" />
                   </button>
                   <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
@@ -246,7 +283,7 @@ export function AlarmsModal({
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-blue-800">{names[1]}</h3>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                  <button onClick={() => { setShowEditNames(true); setEditNameIdx(1); }} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombre">
                     <Edit className="h-5 w-5 text-blue-600" />
                   </button>
                   <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
@@ -282,10 +319,24 @@ export function AlarmsModal({
           </div>
           <EditNamesModal
             open={showEditNames}
-            names={names}
-            onSave={handleSaveNames}
-            onDelete={handleDeleteName}
-            onClose={() => setShowEditNames(false)}
+            names={editNameIdx !== null ? [names[editNameIdx]] : names}
+            onSave={newNames => {
+              if (editNameIdx !== null) {
+                const updated = [...names];
+                updated[editNameIdx] = newNames[0];
+                handleSaveNames(updated);
+              } else {
+                handleSaveNames(newNames);
+              }
+            }}
+            onDelete={idx => {
+              if (editNameIdx !== null) {
+                handleDeleteName(editNameIdx);
+              } else {
+                handleDeleteName(idx);
+              }
+            }}
+            onClose={() => { setShowEditNames(false); setEditNameIdx(null); }}
           />
         </div>
       </div>

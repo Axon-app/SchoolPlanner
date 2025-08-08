@@ -50,6 +50,8 @@ function App() {
   // Mostrar el splash modal antes del contenido principal
   const [showSplash, setShowSplash] = React.useState(true);
   const [isInstalled, setIsInstalled] = React.useState(false);
+  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+  const [showInstallModal, setShowInstallModal] = React.useState(false);
 
   React.useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 1800);
@@ -70,6 +72,32 @@ function App() {
     return () => window.removeEventListener('appinstalled', () => setIsInstalled(true));
   }, []);
 
+  React.useEffect(() => {
+    // Escuchar el evento beforeinstallprompt
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallModal(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      setShowInstallModal(false);
+      setDeferredPrompt(null);
+    } else {
+      setShowInstallModal(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowInstallModal(false);
+  };
+
   return (
     <div className="App">
       {showSplash && (
@@ -80,8 +108,8 @@ function App() {
       )}
       {!showSplash && (
         <>
-          {/* Modal de instalación personalizado para todos los dispositivos */}
-          {!isInstalled && (
+          {/* Modal de instalación universal con lógica real de instalación */}
+          {!isInstalled && showInstallModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
               <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center w-full max-w-xs animate-fadeIn">
                 <img src={process.env.PUBLIC_URL + "/images/logoCalen192.png"} alt="Logo" className="w-16 h-16 mb-4 drop-shadow-lg" />
@@ -92,8 +120,8 @@ function App() {
                   Si no ves el botón, usa el menú de tu navegador y selecciona "Instalar app".<br />
                 </span>
                 <div className="flex gap-4 w-full justify-center">
-                  <button onClick={() => window.location.reload()} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-indigo-700 transition">Instalar</button>
-                  <button onClick={() => document.querySelector('.App').removeChild(document.querySelector('.fixed.inset-0.z-50'))} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold shadow hover:bg-gray-300 transition">Cancelar</button>
+                  <button onClick={handleInstall} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-indigo-700 transition">Instalar</button>
+                  <button onClick={handleCancel} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold shadow hover:bg-gray-300 transition">Cancelar</button>
                 </div>
               </div>
             </div>

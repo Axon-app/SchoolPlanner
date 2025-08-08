@@ -28,10 +28,10 @@ export const shareMonthlyReport = (monthlyTotalsData, setClipboardMessage) => {
 // Función para calcular el total de un día
 export const calculateDayTotal = (data, valoresFijos) => {
   let total = 0;
-  if (data.llevada1) total += valoresFijos.samuel.llevada;
-  if (data.traida1) total += valoresFijos.samuel.traida;
-  if (data.llevada2) total += valoresFijos.martin.llevada;
-  if (data.traida2) total += valoresFijos.martin.traida;
+  if (data.llevada1) total += (data.valorLlevada1 !== undefined ? Number(data.valorLlevada1) : valoresFijos.samuel.llevada);
+  if (data.traida1) total += (data.valorTraida1 !== undefined ? Number(data.valorTraida1) : valoresFijos.samuel.traida);
+  if (data.llevada2) total += (data.valorLlevada2 !== undefined ? Number(data.valorLlevada2) : valoresFijos.martin.llevada);
+  if (data.traida2) total += (data.valorTraida2 !== undefined ? Number(data.valorTraida2) : valoresFijos.martin.traida);
   if (data.valorPrincipal) {
     total += parseFloat(data.valorPrincipal);
   }
