@@ -22,20 +22,15 @@ export const useCalendarData = (currentDate) => {
 
   // Calculate monthly total when dayData changes
   useEffect(() => {
-    const total = Object.values(dayData).reduce((sum, data) => {
-      if (data) {
-        let dayTotal = 0;
-        
-        if (data.llevada1) dayTotal += VALORES_FIJOS.samuel.llevada;
-        if (data.traida1) dayTotal += VALORES_FIJOS.samuel.traida;
-        if (data.llevada2) dayTotal += VALORES_FIJOS.martin.llevada;
-        if (data.traida2) dayTotal += VALORES_FIJOS.martin.traida;
-        
-        if (data.valorPrincipal) {
-          dayTotal += parseFloat(data.valorPrincipal);
+    // Filtrar solo las entradas que corresponden al mes y año actual
+    const total = Object.entries(dayData).reduce((sum, [key, data]) => {
+      // Verificar si la clave pertenece al mes y año actuales
+      const [year, month, day] = key.split('-').map(Number);
+      if (year === currentYear && month === currentMonth) {
+        if (data) {
+          // Calcular usando la función existente para mantener coherencia
+          return sum + calculateDayTotal(data);
         }
-        
-        return sum + dayTotal;
       }
       return sum;
     }, 0);
@@ -46,15 +41,33 @@ export const useCalendarData = (currentDate) => {
 
   const saveMonthlyTotal = (month, year, total) => {
     const monthKey = createMonthKey(year, month);
-    const updatedTotals = monthlyTotalsData.filter(item => item.id !== monthKey);
-    updatedTotals.push({ id: monthKey, total });
-    updatedTotals.sort((a, b) => b.id.localeCompare(a.id));
     
-    setMonthlyTotalsData(updatedTotals);
-    saveToStorage(StorageKeys.MONTHLY_TOTALS, updatedTotals);
+    // Verificamos si hay datos en este mes específico
+    const hasDayDataForThisMonth = Object.entries(dayData).some(([key, data]) => {
+      const [dataYear, dataMonth] = key.split('-').map(Number);
+      return dataYear === year && dataMonth === month && data && Object.keys(data).length > 0;
+    });
+    
+    // Solo actualizamos si hay datos para este mes
+    if (hasDayDataForThisMonth) {
+      const updatedTotals = monthlyTotalsData.filter(item => item.id !== monthKey);
+      updatedTotals.push({ id: monthKey, total });
+      updatedTotals.sort((a, b) => b.id.localeCompare(a.id));
+      
+      setMonthlyTotalsData(updatedTotals);
+      saveToStorage(StorageKeys.MONTHLY_TOTALS, updatedTotals);
+    } else {
+      // Si no hay datos, nos aseguramos de que este mes no aparezca en el historial
+      const filteredTotals = monthlyTotalsData.filter(item => item.id !== monthKey);
+      if (filteredTotals.length !== monthlyTotalsData.length) {
+        setMonthlyTotalsData(filteredTotals);
+        saveToStorage(StorageKeys.MONTHLY_TOTALS, filteredTotals);
+      }
+    }
   };
 
   const updateDayData = (selectedDay, field, value) => {
+    // Asegurarnos de que estamos usando el formato correcto para las claves
     const key = createDateKey(currentYear, currentMonth, selectedDay);
     
     const newDayData = {
@@ -85,13 +98,31 @@ export const useCalendarData = (currentDate) => {
 
   const calculateDayTotal = (data) => {
     let total = 0;
-    if (data.llevada1) total += VALORES_FIJOS.samuel.llevada;
-    if (data.traida1) total += VALORES_FIJOS.samuel.traida;
-    if (data.llevada2) total += VALORES_FIJOS.martin.llevada;
-    if (data.traida2) total += VALORES_FIJOS.martin.traida;
+    
+    // Obtener valores personalizados de localStorage o usar predeterminados
+    const valorLlevada1 = data.valorLlevada1 !== undefined ? Number(data.valorLlevada1) : 
+                         (localStorage.getItem('valorLlevada1') !== null ? Number(localStorage.getItem('valorLlevada1')) : VALORES_FIJOS.samuel.llevada);
+    
+    const valorTraida1 = data.valorTraida1 !== undefined ? Number(data.valorTraida1) : 
+                        (localStorage.getItem('valorTraida1') !== null ? Number(localStorage.getItem('valorTraida1')) : VALORES_FIJOS.samuel.traida);
+    
+    const valorLlevada2 = data.valorLlevada2 !== undefined ? Number(data.valorLlevada2) : 
+                         (localStorage.getItem('valorLlevada2') !== null ? Number(localStorage.getItem('valorLlevada2')) : VALORES_FIJOS.martin.llevada);
+    
+    const valorTraida2 = data.valorTraida2 !== undefined ? Number(data.valorTraida2) : 
+                        (localStorage.getItem('valorTraida2') !== null ? Number(localStorage.getItem('valorTraida2')) : VALORES_FIJOS.martin.traida);
+    
+    // Sumar los valores correspondientes (incluso si son cero)
+    if (data.llevada1) total += valorLlevada1;
+    if (data.traida1) total += valorTraida1;
+    if (data.llevada2) total += valorLlevada2;
+    if (data.traida2) total += valorTraida2;
+    
+    // Agregar valor adicional si existe
     if (data.valorPrincipal) {
       total += parseFloat(data.valorPrincipal);
     }
+    
     return total;
   };
 

@@ -1,8 +1,15 @@
+/* ==========================================================================
+   Tailwind Directives - These are processed by Tailwind CSS, not standard CSS
+   ========================================================================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for the School Planner application */
+/* ==========================================================================
+   Custom styles for the School Planner application
+   ========================================================================== */
+
+/* Base layer - fundamental elements like typography, background colors */
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
@@ -12,8 +19,21 @@
   html {
     scroll-behavior: smooth;
   }
+  
+  /* Quitar flechas de los inputs numéricos */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
 
+/* Components layer - reusable UI components and patterns */
 @layer components {
   .btn-primary {
     @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all duration-200 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl transform hover:scale-105;
@@ -54,6 +74,7 @@
   }
 }
 
+/* Utilities layer - single-purpose classes for specific modifications */
 @layer utilities {
   .text-shadow {
     text-shadow: 0 2px 4px rgba(0,0,0,0.10);
@@ -74,5 +95,18 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  /* Utilidades para mejorar la interacción táctil */
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+  
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+  
+  .touch-none {
+    touch-action: none;
   }
 }

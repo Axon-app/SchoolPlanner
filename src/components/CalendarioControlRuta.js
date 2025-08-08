@@ -84,6 +84,8 @@ export const CalendarioControlRuta = () => {
     const newDate = new Date(currentDate);
     newDate.setMonth(currentDate.getMonth() + direction);
     setCurrentDate(newDate);
+    // Al cambiar de mes, limpiamos el día seleccionado para evitar confusiones
+    setSelectedDay(null);
   };
 
   const handleSaveAlarms = () => {
@@ -91,8 +93,9 @@ export const CalendarioControlRuta = () => {
     setShowAlarmsModal(false);
   };
 
-  const handleShareReport = (setClipboardMessage) => {
-    shareService.shareMonthlyReport(monthlyTotalsData, setClipboardMessage);
+  const handleShareReport = (setClipboardMessage, dataToShare = null) => {
+    const data = dataToShare || monthlyTotalsData;
+    shareService.shareMonthlyReport(data, setClipboardMessage);
   };
 
   if (!isLoggedIn) {
@@ -115,6 +118,7 @@ export const CalendarioControlRuta = () => {
           currentDate={currentDate}
           onDayClick={handleDayClick}
           getDayColor={getDayColor}
+          onChangeMonth={handleChangeMonth}
         />
 
         {showModal && (

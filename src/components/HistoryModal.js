@@ -6,8 +6,11 @@ export const HistoryModal = ({ onClose, monthlyTotalsData, onShareReport }) => {
   const [clipboardMessage, setClipboardMessage] = useState('');
 
   const handleShare = () => {
-    onShareReport(setClipboardMessage);
+    onShareReport(setClipboardMessage, sortedData);
   };
+
+  // Ordenar los datos por fecha, más recientes primero
+  const sortedData = [...monthlyTotalsData].sort((a, b) => b.id.localeCompare(a.id));
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -25,14 +28,24 @@ export const HistoryModal = ({ onClose, monthlyTotalsData, onShareReport }) => {
           </button>
         </div>
         <ul className="space-y-3 mb-4">
-          {monthlyTotalsData.length > 0 ? (
-            monthlyTotalsData.map((item) => {
+          {sortedData.length > 0 ? (
+            sortedData.map((item) => {
               const [year, month] = item.id.split('-');
-              const monthName = meses[parseInt(month, 10) - 1];
+              const monthIndex = parseInt(month, 10);
+              const monthName = meses[monthIndex];
               return (
                 <li key={item.id} className="flex justify-between items-center bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-200">
                   <span className="font-medium text-slate-700">{monthName} {year}</span>
-                  <span className="text-lg font-bold text-indigo-600">${item.total.toLocaleString()}</span>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg font-bold text-indigo-600">${item.total.toLocaleString()}</span>
+                    <button 
+                      onClick={() => onShareReport(setClipboardMessage, [item])} 
+                      className="p-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors"
+                      title={`Compartir ${monthName} ${year}`}
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </li>
               );
             })
@@ -45,7 +58,7 @@ export const HistoryModal = ({ onClose, monthlyTotalsData, onShareReport }) => {
           className="w-full flex items-center justify-center space-x-2 bg-teal-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300"
         >
           <Share2 className="h-5 w-5" />
-          <span>Compartir Informe</span>
+          <span>Compartir Todos los Meses</span>
         </button>
         {clipboardMessage && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-green-500 text-white text-sm py-2 px-4 rounded-full shadow-lg transition-opacity duration-300 animate-fade-in">

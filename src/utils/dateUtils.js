@@ -32,5 +32,6 @@ export const createDateKey = (year, month, day) => {
 };
 
 export const createMonthKey = (year, month) => {
-  return `${year}-${String(month + 1).padStart(2, '0')}`;
+  // Asegura formato consistente para las claves de mes
+  return `${year}-${month}`;
 };

@@ -1,0 +1,4 @@
+{
+  "ignoreAtRules": ["tailwind", "apply", "layer", "variants", "responsive", "screen"],
+  "ignoreProperties": ["composes"]
+}

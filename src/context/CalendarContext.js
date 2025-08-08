@@ -82,18 +82,33 @@ export const CalendarProvider = ({ children }) => {
       return sum;
     }, 0);
     setTotalMensual(total);
-    
-    // Simulamos guardar el total (sin Firebase)
+    // Solo guardar el total mensual si hay datos para el mes actual
     const docId = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-    setMonthlyTotalsData(prev => {
-      const existingIndex = prev.findIndex(item => item.id === docId);
-      if (existingIndex >= 0) {
-        const newData = [...prev];
-        newData[existingIndex] = { ...newData[existingIndex], total };
-        return newData;
-      } else {
-        return [{ id: docId, total }, ...prev];
+    const tieneDatosMes = Object.entries(dayData).some(([key, data]) => {
+      const [year, month] = key.split('-');
+      return parseInt(year) === currentYear && parseInt(month) === currentMonth + 1 && data && Object.keys(data).length > 0;
+    });
+    // Filtrar todos los meses para mostrar solo los que tienen datos guardados
+    const mesesConDatos = Object.entries(dayData).reduce((acc, [key, data]) => {
+      const [year, month] = key.split('-');
+      if (data && Object.keys(data).length > 0) {
+        const id = `${year}-${month}`;
+        if (!acc.includes(id)) acc.push(id);
       }
+      return acc;
+    }, []);
+    setMonthlyTotalsData(prev => {
+      // Actualizar o agregar el mes actual si tiene datos
+      let nuevosTotales = prev.filter(item => mesesConDatos.includes(item.id));
+      if (tieneDatosMes) {
+        const existingIndex = nuevosTotales.findIndex(item => item.id === docId);
+        if (existingIndex >= 0) {
+          nuevosTotales[existingIndex] = { ...nuevosTotales[existingIndex], total };
+        } else {
+          nuevosTotales = [{ id: docId, total }, ...nuevosTotales];
+        }
+      }
+      return nuevosTotales;
     });
   }, [dayData, isLoggedIn, currentMonth, currentYear]);
 
