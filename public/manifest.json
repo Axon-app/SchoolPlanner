@@ -1,19 +1,20 @@
 {
   "name": "School Planner",
   "short_name": "Planner",
-  "start_url": ".",
+  "start_url": "/SchoolPlanner/",
+  "scope": "/SchoolPlanner/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "description": "Organiza tus horarios escolares fácilmente.",
   "icons": [
     {
-      "src": "logoCalen-192.png",
+      "src": "images/logoCalen192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logoCalen-512.png",
+      "src": "images/logoCalen512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -1,7 +1,8 @@
 {
   "name": "School Planner",
   "short_name": "Planner",
-  "start_url": ".",
+  "start_url": "/SchoolPlanner/",
+  "scope": "/SchoolPlanner/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
