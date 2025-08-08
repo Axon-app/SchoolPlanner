@@ -80,7 +80,24 @@ function App() {
       )}
       {!showSplash && (
         <>
-          {!isInstalled && <InstallPWAButton />}
+          {/* Modal de instalación personalizado para todos los dispositivos */}
+          {!isInstalled && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center w-full max-w-xs animate-fadeIn">
+                <img src={process.env.PUBLIC_URL + "/images/logoCalen192.png"} alt="Logo" className="w-16 h-16 mb-4 drop-shadow-lg" />
+                <span className="mb-2 text-xl font-bold text-slate-800 text-center">¡Bienvenido a School Planner!</span>
+                <span className="mb-4 text-sm text-slate-700 text-center">¿Quieres instalar la aplicación para acceder más rápido y sin navegador?</span>
+                <span className="mb-4 text-xs text-indigo-700 bg-indigo-100 rounded px-2 py-1 block">
+                  Pulsa <b>Instalar</b> para agregar la app a tu pantalla de inicio.<br />
+                  Si no ves el botón, usa el menú de tu navegador y selecciona "Instalar app".<br />
+                </span>
+                <div className="flex gap-4 w-full justify-center">
+                  <button onClick={() => window.location.reload()} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-indigo-700 transition">Instalar</button>
+                  <button onClick={() => document.querySelector('.App').removeChild(document.querySelector('.fixed.inset-0.z-50'))} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold shadow hover:bg-gray-300 transition">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
           <CalendarioControlRuta />
         </>
       )}

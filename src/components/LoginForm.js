@@ -104,6 +104,12 @@ export const LoginForm = ({ onLogin, loginError }) => {
             <span className="text-xs text-blue-700 bg-blue-100 rounded px-2 py-1 block mb-2">
               Puedes cambiar tu usuario y contraseña después de iniciar sesión desde este mismo formulario.
             </span>
+            <span className="text-xs text-indigo-700 bg-indigo-100 rounded px-2 py-1 block mt-2">
+              <b>¿No ves la opción de instalar?</b> <br />
+              <b>Android:</b> Usa el menú de tres puntos y selecciona "Instalar app".<br />
+              <b>iPhone/iPad:</b> Usa el botón de compartir (<span style={{fontWeight:'bold'}}>⬆️</span>) y elige "Agregar a pantalla de inicio".<br />
+              <b>PC:</b> Busca el icono de instalar en la barra de direcciones o menú del navegador.
+            </span>
           </div>
           {!isReset && (
             <div className="mb-4 relative">
