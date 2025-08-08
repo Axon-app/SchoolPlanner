@@ -9,8 +9,9 @@ import {
 } from '../utils/userStorage';
 
 export const LoginForm = ({ onLogin, loginError }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(() => localStorage.getItem('rememberMe') === 'true');
+  const [username, setUsername] = useState(() => (localStorage.getItem('rememberMe') === 'true' ? localStorage.getItem('username') || '' : ''));
+  const [password, setPassword] = useState(() => (localStorage.getItem('rememberMe') === 'true' ? localStorage.getItem('password') || '' : ''));
   const [showPassword, setShowPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [isReset, setIsReset] = useState(false);
@@ -51,8 +52,15 @@ export const LoginForm = ({ onLogin, loginError }) => {
     }
     // Login normal
     if (authenticate(username, password)) {
-      localStorage.setItem('username', username);
-      localStorage.setItem('password', password);
+      if (remember) {
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
+        localStorage.setItem('rememberMe', 'true');
+      } else {
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+        localStorage.setItem('rememberMe', 'false');
+      }
       onLogin(username, password);
     } else {
       setMessage('Credenciales incorrectas.');
@@ -75,7 +83,7 @@ export const LoginForm = ({ onLogin, loginError }) => {
             School Planner
           </h1>
         </div>
-        <form onSubmit={handleSubmit}>
+  <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
               type="text"
@@ -122,6 +130,21 @@ export const LoginForm = ({ onLogin, loginError }) => {
           {message && (
             <div className={`text-sm mb-4 ${message.includes('incorrectas') || message.includes('existe') ? 'text-red-500' : 'text-green-600'}`}>
               {message}
+            </div>
+          )}
+          <div className="mb-4 flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={remember}
+              onChange={e => setRemember(e.target.checked)}
+              className="mr-2 accent-teal-600"
+            />
+            <label htmlFor="rememberMe" className="text-sm text-slate-700 select-none">Recordar usuario y contraseña</label>
+          </div>
+          {remember && (
+            <div className="mb-4 text-xs text-yellow-700 bg-yellow-100 rounded px-2 py-1">
+              Advertencia: No actives esta opción en computadoras públicas o compartidas.
             </div>
           )}
           <button

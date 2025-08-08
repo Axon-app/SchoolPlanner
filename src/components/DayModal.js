@@ -1,7 +1,8 @@
-import React from 'react';
-import { X, DollarSign, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, DollarSign, RotateCcw, Edit } from 'lucide-react';
 import { VALORES_FIJOS } from '../utils/constants';
 import { meses } from '../utils/dateUtils';
+import EditNamesModal from './EditNamesModal';
 
 export const DayModal = ({ 
   selectedDay, 
@@ -12,8 +13,7 @@ export const DayModal = ({
   onClose, 
   calculateDayTotal 
 }) => {
-  const currentMonth = currentDate.getMonth();
-
+  // Restaurar función updateField
   const updateField = (field, value) => {
     if (field === 'valorPrincipal') {
       if (value === '' || !isNaN(value)) {
@@ -22,6 +22,24 @@ export const DayModal = ({
     } else {
       onUpdateData(field, value);
     }
+  };
+  const currentMonth = currentDate.getMonth();
+  // Nombres editables sincronizados con localStorage
+  const [names, setNames] = useState([
+    localStorage.getItem('nameSamuel') || 'Samuel Mathias',
+    localStorage.getItem('nameMartin') || 'Martín Santiago'
+  ]);
+  const [showEditNames, setShowEditNames] = useState(false);
+  const handleSaveNames = (newNames) => {
+    setNames(newNames);
+    localStorage.setItem('nameSamuel', newNames[0]);
+    localStorage.setItem('nameMartin', newNames[1]);
+  };
+  const handleDeleteName = (idx) => {
+    const updated = [...names];
+    updated[idx] = idx === 0 ? 'Samuel Mathias' : 'Martín Santiago';
+    setNames(updated);
+    localStorage.setItem(idx === 0 ? 'nameSamuel' : 'nameMartin', updated[idx]);
   };
 
   return (
@@ -40,9 +58,17 @@ export const DayModal = ({
         </div>
 
         <div className="space-y-6">
-          {/* Samuel Mathias */}
+          {/* Samuel Mathias editable */}
           <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-            <h4 className="text-lg font-bold text-slate-700 mb-3">Samuel Mathias</h4>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-lg font-bold text-slate-700">{names[0]}</h4>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                  <Edit className="h-5 w-5 text-blue-600" />
+                </button>
+                <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
+              </div>
+            </div>
             <div className="space-y-3">
               <label className="flex items-center justify-between cursor-pointer p-2 bg-white rounded-lg border hover:bg-slate-100">
                 <div className="flex items-center space-x-3">
@@ -82,9 +108,17 @@ export const DayModal = ({
             </div>
           </div>
 
-          {/* Martín Santiago */}
+          {/* Martín Santiago editable */}
           <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-            <h4 className="text-lg font-bold text-slate-700 mb-3">Martín Santiago</h4>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-lg font-bold text-slate-700">{names[1]}</h4>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                  <Edit className="h-5 w-5 text-blue-600" />
+                </button>
+                <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
+              </div>
+            </div>
             <div className="space-y-3">
               <label className="flex items-center justify-between cursor-pointer p-2 bg-white rounded-lg border hover:bg-slate-100">
                 <div className="flex items-center space-x-3">
@@ -172,6 +206,13 @@ export const DayModal = ({
             </button>
           </div>
         </div>
+        <EditNamesModal
+          open={showEditNames}
+          names={names}
+          onSave={handleSaveNames}
+          onDelete={handleDeleteName}
+          onClose={() => setShowEditNames(false)}
+        />
       </div>
     </div>
   );

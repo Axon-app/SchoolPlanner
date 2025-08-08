@@ -1,5 +1,6 @@
-import React from 'react';
-import { X, Bell, Info, Clock, Save } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Bell, Info, Clock, Save, Edit } from 'lucide-react';
+import EditNamesModal from './EditNamesModal';
 
 const TimePickerWheel = ({ value, onChange, type }) => {
   const min = type === 'hours' ? 0 : 0;
@@ -61,7 +62,6 @@ const TimePicker = ({ time, onChange, label }) => {
 };
 
 export function AlarmsModal({
-  // ...existing code...
   onClose,
   samuelDepartureTime,
   setSamuelDepartureTime,
@@ -75,6 +75,24 @@ export function AlarmsModal({
   requestNotificationPermission,
   onSaveAlarms
 }) {
+  // Nombres editables
+  const [names, setNames] = useState([
+    localStorage.getItem('nameSamuel') || 'Samuel Mathias',
+    localStorage.getItem('nameMartin') || 'Martín Santiago'
+  ]);
+  const [showEditNames, setShowEditNames] = useState(false);
+
+  const handleSaveNames = (newNames) => {
+    setNames(newNames);
+    localStorage.setItem('nameSamuel', newNames[0]);
+    localStorage.setItem('nameMartin', newNames[1]);
+  };
+  const handleDeleteName = (idx) => {
+    const updated = [...names];
+    updated[idx] = idx === 0 ? 'Samuel Mathias' : 'Martín Santiago';
+    setNames(updated);
+    localStorage.setItem(idx === 0 ? 'nameSamuel' : 'nameMartin', updated[idx]);
+  };
   // Referencia para el audio
   const audioRef = React.useRef(null);
   const [alarmPlayed, setAlarmPlayed] = React.useState(false);
@@ -203,7 +221,15 @@ export function AlarmsModal({
 
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
-              <h3 className="text-lg font-semibold text-green-800 mb-4">Samuel</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-green-800">{names[0]}</h3>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                    <Edit className="h-5 w-5 text-blue-600" />
+                  </button>
+                  <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
+                </div>
+              </div>
               <TimePicker
                 time={samuelDepartureTime}
                 onChange={setSamuelDepartureTime}
@@ -217,7 +243,15 @@ export function AlarmsModal({
             </div>
 
             <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-lg border border-blue-200">
-              <h3 className="text-lg font-semibold text-blue-800 mb-4">Martín</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-blue-800">{names[1]}</h3>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setShowEditNames(true)} className="p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition" title="Editar nombres">
+                    <Edit className="h-5 w-5 text-blue-600" />
+                  </button>
+                  <span className="text-xs text-blue-600 font-medium">Escribe el nombre</span>
+                </div>
+              </div>
               <TimePicker
                 time={martinDepartureTime}
                 onChange={setMartinDepartureTime}
@@ -246,6 +280,13 @@ export function AlarmsModal({
               Cancelar
             </button>
           </div>
+          <EditNamesModal
+            open={showEditNames}
+            names={names}
+            onSave={handleSaveNames}
+            onDelete={handleDeleteName}
+            onClose={() => setShowEditNames(false)}
+          />
         </div>
       </div>
     </div>
