@@ -10,8 +10,9 @@ import {
 
 export const LoginForm = ({ onLogin, loginError }) => {
   const [remember, setRemember] = useState(() => localStorage.getItem('rememberMe') === 'true');
-  const [username, setUsername] = useState(() => (localStorage.getItem('rememberMe') === 'true' ? localStorage.getItem('username') || '' : ''));
-  const [password, setPassword] = useState(() => (localStorage.getItem('rememberMe') === 'true' ? localStorage.getItem('password') || '' : ''));
+    // Por defecto, mostrar las credenciales fijas
+    const [username, setUsername] = useState('admin');
+    const [password, setPassword] = useState('temporal123');
   const [showPassword, setShowPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [isReset, setIsReset] = useState(false);
@@ -85,14 +86,20 @@ export const LoginForm = ({ onLogin, loginError }) => {
         </div>
   <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Usuario"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 rounded-lg border-2 border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              required
-            />
+              <input
+                type="text"
+                placeholder="Usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full p-3 rounded-lg border-2 border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                required
+              />
+                <span className="text-xs text-gray-500 block mt-1">Usuario por defecto: <b>admin</b></span>
+          </div>
+          <div className="mb-6">
+            <span className="text-xs text-blue-700 bg-blue-100 rounded px-2 py-1 block mb-2">
+              Puedes cambiar tu usuario y contraseña después de iniciar sesión desde este mismo formulario.
+            </span>
           </div>
           {!isReset && (
             <div className="mb-4 relative">
@@ -175,6 +182,9 @@ export const LoginForm = ({ onLogin, loginError }) => {
           >
             {isReset ? 'Volver a iniciar sesión' : '¿Olvidaste tu contraseña?'}
           </button>
+          <span className="text-xs text-gray-600 mt-2 text-left">
+            Para cambiar tu contraseña, haz clic en "¿Olvidaste tu contraseña?", ingresa tu usuario y la nueva contraseña que deseas establecer.
+          </span>
         </div>
       </div>
     </div>

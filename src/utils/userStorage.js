@@ -1,11 +1,19 @@
 // userStorage.js
 // Utilidades para gestionar usuarios en localStorage
 
+
 const USERS_KEY = 'schoolPlannerUsers';
+const DEFAULT_USER = { username: 'admin', password: 'temporal123' };
 
 export function getUsers() {
   const users = localStorage.getItem(USERS_KEY);
-  return users ? JSON.parse(users) : [];
+  if (users) {
+    return JSON.parse(users);
+  } else {
+    // Si no hay usuarios, crear el usuario fijo por defecto
+    localStorage.setItem(USERS_KEY, JSON.stringify([DEFAULT_USER]));
+    return [DEFAULT_USER];
+  }
 }
 
 export function saveUser(username, password) {
