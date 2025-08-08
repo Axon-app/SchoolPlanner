@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/SchoolPlanner/static/css/main.2c36d452.css",
-    "main.js": "/SchoolPlanner/static/js/main.7eade072.js",
+    "main.css": "/SchoolPlanner/static/css/main.fe587b37.css",
+    "main.js": "/SchoolPlanner/static/js/main.98637992.js",
     "static/media/logoCalen.png": "/SchoolPlanner/static/media/logoCalen.2eaafe15d5d0584b1498.png",
     "index.html": "/SchoolPlanner/index.html",
-    "main.2c36d452.css.map": "/SchoolPlanner/static/css/main.2c36d452.css.map",
-    "main.7eade072.js.map": "/SchoolPlanner/static/js/main.7eade072.js.map"
+    "main.fe587b37.css.map": "/SchoolPlanner/static/css/main.fe587b37.css.map",
+    "main.98637992.js.map": "/SchoolPlanner/static/js/main.98637992.js.map"
   },
   "entrypoints": [
-    "static/css/main.2c36d452.css",
-    "static/js/main.7eade072.js"
+    "static/css/main.fe587b37.css",
+    "static/js/main.98637992.js"
   ]
 }
